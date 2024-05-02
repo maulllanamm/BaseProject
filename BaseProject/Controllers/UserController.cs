@@ -28,6 +28,13 @@ namespace BaseProject.Controllers
             return Ok(users);
         }
 
+        //[HttpGet]
+        //public async Task<ActionResult> GetByListProperty(string field, string[] values)
+        //{
+        //    var users = await _userService.GetByListProperty(field, values);
+        //    return Ok(users);
+        //}
+
         [HttpGet]
         public async Task<ActionResult> GetByPage([FromQuery] int page)
         {
@@ -42,6 +49,14 @@ namespace BaseProject.Controllers
             return Ok(users);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Create(UserDTO userDto)
+        {
+            var users = await _userService.Create(userDto);
+            return Ok(users);
+        }
+
+
         [HttpPut]
         public async Task<ActionResult> Update(UserDTO userDto)
         {
@@ -49,6 +64,25 @@ namespace BaseProject.Controllers
             return Ok(users);
         }
 
+        [HttpPut]
+        public async Task<ActionResult> UpdateBulk(List<UserDTO> userDto)
+        {
+            var users = await _userService.UpdateBulk(userDto);
+            return Ok(users);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var users = await _userService.Delete(id);
+            return Ok(users);
+        }
+        [HttpDelete]
+        public async Task<ActionResult> DeleteBulk(List<UserDTO> userDto)
+        {
+            var users = await _userService.DeleteBulk(userDto);
+            return Ok(users);
+        }
         [HttpDelete]
         public async Task<ActionResult> SoftDelete(int id)
         {

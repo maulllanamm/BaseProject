@@ -67,6 +67,7 @@ namespace Repositories.Base
             entity.is_deleted = false;
 
             await _context.Set<TEntity>().AddAsync(entity);
+            await _context.SaveChangesAsync(); // Simpan perubahan ke database
             return entity;
         }
 
@@ -89,13 +90,13 @@ namespace Repositories.Base
                 splitSize *= 2;
             }
 
-            var batchs = entities
+            var batches = entities
                         .Select((entities, index) => (entities, index))
                         .GroupBy(pair => pair.index / splitSize)
                         .Select(group => group.Select(pair => pair.entities).ToList())
                         .ToList();
 
-            foreach (var batch in batchs)
+            foreach (var batch in batches)
             {
                 await _context.BulkInsertAsync(batch);
             }
@@ -131,6 +132,7 @@ namespace Repositories.Base
             if (entityToDelete != null)
             {
                 _context.Set<TEntity>().Remove(entityToDelete);
+                await _context.SaveChangesAsync(); // Simpan perubahan ke database
             }
 
             return id;
