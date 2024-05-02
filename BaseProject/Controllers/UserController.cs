@@ -1,0 +1,65 @@
+﻿using DTO;
+using Microsoft.AspNetCore.Mvc;
+using Services;
+using System.Collections.Generic;
+
+namespace BaseProject.Controllers
+{
+    [ApiController]
+    [Route("[controller]/[action]")]
+    public class UserController : ControllerBase
+    {
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetAll()
+        {
+            var users = await _userService.GetAll();
+            return Ok(users);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetByListId([FromQuery] List<int> listId)
+        {
+            var users = await _userService.GetByListId(listId);
+            return Ok(users);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetByPage([FromQuery] int page)
+        {
+            var users = await _userService.GetAll(page);
+            return Ok(users);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetById([FromQuery] int id)
+        {
+            var users = await _userService.GetById(id);
+            return Ok(users);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Update(UserDTO userDto)
+        {
+            var users = await _userService.Update(userDto);
+            return Ok(users);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> SoftDelete(int id)
+        {
+            var users = await _userService.SoftDelete(id);
+            return Ok(users);
+        }
+        [HttpDelete]
+        public async Task<ActionResult> SoftDeleteBulk(List<UserDTO> userDto)
+        {
+            var users = await _userService.SoftDeleteBulk(userDto);
+            return Ok(users);
+        }
+    }
+}
