@@ -1,4 +1,5 @@
 ﻿using DTO;
+using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interface;
@@ -18,6 +19,14 @@ namespace BaseProject.Controllers
             _service = service;
             _userService = userService;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> GetMe()
+        {
+            var user = await _service.GetMe();
+            return Ok(user);
         }
 
         [AllowAnonymous]
@@ -44,7 +53,8 @@ namespace BaseProject.Controllers
             {
                 return BadRequest(login.ErrorMessage);
             }
-            return Ok(login.Data);
+            var accessToken = await _service.GenerateAccessToken(login.Data.Username, login.Data.RoleName);
+            return Ok(accessToken);
         }
     }
 }
