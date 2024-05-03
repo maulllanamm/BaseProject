@@ -14,7 +14,7 @@ namespace Services
         Task<List<UserDTO>> GetByListId(List<int> listId);
         Task<List<UserDTO>> GetByListProperty(string field, string[] values);
         Task<int> SoftDelete(int id);
-        Task<string> SoftDeleteBulk(List<UserDTO> userDto);
+        Task<string> SoftDeleteBulk(List<int> listId);
         Task<UserDTO> Update(UserDTO userDto);
         Task<string> UpdateBulk(List<UserDTO> userDto);
     }

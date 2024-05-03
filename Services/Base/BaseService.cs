@@ -99,12 +99,11 @@ namespace Services.Base
         {
             return await _repository.SoftDelete(id);
         }
-        public virtual async Task<string> SoftDeleteBulk(List<TDTO> viewModels)
+        public virtual async Task<string> SoftDeleteBulk(List<int> listId)
         {
-            var entities = _mapper.Map<List<TEntity>>(viewModels);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var res = await _repository.SoftDeleteBulk(entities);
+            var res = await _repository.SoftDeleteBulk(listId);
             stopwatch.Stop();
             return $"Success delete: {res} data , Elapsed time: {stopwatch.Elapsed}";
         }

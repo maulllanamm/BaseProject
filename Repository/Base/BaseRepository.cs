@@ -157,10 +157,9 @@ namespace Repositories.Base
             return id;
         }
 
-        public async Task<int> SoftDeleteBulk(List<TEntity> entities)
+        public async Task<int> SoftDeleteBulk(List<int> entitiesId)
         {
-            var listId = entities.Select(x => x.id).ToList();
-            var entitiesToDelete = _context.Set<TEntity>().Where(x => listId.Contains(x.id)).ToList();
+            var entitiesToDelete = _context.Set<TEntity>().Where(x => entitiesId.Contains(x.id)).ToList();
             if (entitiesToDelete != null)
             {
                 entitiesToDelete = entitiesToDelete.Select(x =>

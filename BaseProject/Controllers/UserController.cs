@@ -90,9 +90,9 @@ namespace BaseProject.Controllers
             return Ok(users);
         }
         [HttpDelete]
-        public async Task<ActionResult> SoftDeleteBulk(List<UserDTO> userDto)
+        public async Task<ActionResult> SoftDeleteBulk(List<int> listId)
         {
-            var users = await _userService.SoftDeleteBulk(userDto);
+            var users = await _userService.SoftDeleteBulk(listId);
             return Ok(users);
         }
     }

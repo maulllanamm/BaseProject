@@ -81,9 +81,9 @@ namespace Services
         {
             return await base.SoftDelete(id);
         }
-        public async Task<string> SoftDeleteBulk(List<UserDTO> userDto)
+        public async Task<string> SoftDeleteBulk(List<int> listId)
         {
-            var res = await base.SoftDeleteBulk(userDto);
+            var res = await base.SoftDeleteBulk(listId);
             return res;
         }
     }

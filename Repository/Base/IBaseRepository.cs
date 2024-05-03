@@ -9,7 +9,7 @@ namespace Repositories.Base
         Task<int> Delete(int id);
         Task<int> DeleteBulk(List<TEntity> entites);
         Task<int> SoftDelete(int id);
-        Task<int> SoftDeleteBulk(List<TEntity> entites);
+        Task<int> SoftDeleteBulk(List<int> entitesId);
         Task<TEntity> Update(TEntity entity);
         Task<int> UpdateBulk(List<TEntity> entites);
         Task<List<TEntity>> GetAll();

@@ -16,7 +16,7 @@ namespace Services.Base
         public Task<int> Delete(int id);
         public Task<string> DeleteBulk(List<TDTO> viewModels);
         public Task<int> SoftDelete(int id);
-        public Task<string> SoftDeleteBulk(List<TDTO> viewModels);
+        public Task<string> SoftDeleteBulk(List<int> listId);
         public Task<int> Count();
     }
 }
