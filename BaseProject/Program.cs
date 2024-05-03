@@ -7,7 +7,11 @@ using Swashbuckle.AspNetCore.Filters;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Database");
 builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(connectionString), ServiceLifetime.Scoped);
-builder.Services.AddCustomService();
+
+// dependencies
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices();
+
 builder.Services.AddAutoMapper(typeof(AutoMapConfig));
 // Add services to the container.
 
