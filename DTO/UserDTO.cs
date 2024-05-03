@@ -2,7 +2,7 @@
 
 namespace DTO
 {
-    public class UserDTO : BaseDTO
+    public class UserDTO : BaseGuidDTO
     {
         public int RoleId { get; set; }
         public string? RoleName { get; set; }

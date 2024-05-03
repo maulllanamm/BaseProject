@@ -1,7 +1,6 @@
 ﻿using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Services;
-using System.Collections.Generic;
 
 namespace BaseProject.Controllers
 {
@@ -22,7 +21,7 @@ namespace BaseProject.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetByListId([FromQuery] List<int> listId)
+        public async Task<ActionResult> GetByListId([FromQuery] List<Guid> listId)
         {
             var users = await _userService.GetByListId(listId);
             return Ok(users);
@@ -36,7 +35,7 @@ namespace BaseProject.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetById([FromQuery] int id)
+        public async Task<ActionResult> GetById([FromQuery] Guid id)
         {
             var users = await _userService.GetById(id);
             return Ok(users);
@@ -58,7 +57,7 @@ namespace BaseProject.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(Guid id)
         {
             var users = await _userService.Delete(id);
             return Ok(users);
@@ -70,13 +69,13 @@ namespace BaseProject.Controllers
             return Ok(users);
         }
         [HttpDelete]
-        public async Task<ActionResult> SoftDelete(int id)
+        public async Task<ActionResult> SoftDelete(Guid id)
         {
             var users = await _userService.SoftDelete(id);
             return Ok(users);
         }
         [HttpDelete]
-        public async Task<ActionResult> SoftDeleteBulk(List<int> listId)
+        public async Task<ActionResult> SoftDeleteBulk(List<Guid> listId)
         {
             var users = await _userService.SoftDeleteBulk(listId);
             return Ok(users);

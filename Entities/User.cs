@@ -2,7 +2,7 @@
 
 namespace Entities
 {
-    public class User : BaseEntity
+    public class User : BaseGuidEntity
     {
         public int role_id { get; set; }
         public string? role_name { get; set; }

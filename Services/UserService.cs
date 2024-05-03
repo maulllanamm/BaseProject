@@ -7,11 +7,11 @@ using System.Diagnostics;
 
 namespace Services
 {
-    public class UserService : BaseService<UserDTO, User>, IUserService
+    public class UserService : BaseGuidService<UserDTO, User>, IUserService
     {
         private readonly IMapper _mapper;
-        private readonly IBaseRepository<User> _repository;
-        public UserService(IMapper mapper, IBaseRepository<User> repository) : base(mapper, repository)
+        private readonly IBaseGuidRepository<User> _repository;
+        public UserService(IMapper mapper, IBaseGuidRepository<User> repository) : base(mapper, repository)
         {
             _mapper = mapper;
             _repository = repository;
@@ -23,7 +23,7 @@ namespace Services
             return _mapper.Map<List<UserDTO>>(entities);
         }
 
-        public async Task<List<UserDTO>> GetByListId(List<int> listId)
+        public async Task<List<UserDTO>> GetByListId(List<Guid> listId)
         {
             var entities = await base.GetByListId(listId);
             return _mapper.Map<List<UserDTO>>(entities);
@@ -40,7 +40,7 @@ namespace Services
             var entities = await base.GetAll(page);
             return _mapper.Map<List<UserDTO>>(entities);
         }
-        public async Task<UserDTO> GetById(int id)
+        public async Task<UserDTO> GetById(Guid id)
         {
             var entity = await base.GetById(id);
             return _mapper.Map<UserDTO>(entity);
@@ -57,7 +57,7 @@ namespace Services
             var res = await base.UpdateBulk(userDto);
             return res;
         }
-        public async Task<int> Delete(int id)
+        public async Task<Guid> Delete(Guid id)
         {
             return await base.Delete(id);
         }
@@ -67,11 +67,11 @@ namespace Services
             return res;
         }
 
-        public async Task<int> SoftDelete(int id)
+        public async Task<Guid> SoftDelete(Guid id)
         {
             return await base.SoftDelete(id);
         }
-        public async Task<string> SoftDeleteBulk(List<int> listId)
+        public async Task<string> SoftDeleteBulk(List<Guid> listId)
         {
             var res = await base.SoftDeleteBulk(listId);
             return res;
