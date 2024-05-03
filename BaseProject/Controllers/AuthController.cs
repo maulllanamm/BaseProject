@@ -89,7 +89,7 @@ namespace BaseProject.Controllers
             var newToken = await _service.GenerateAccessToken(user.Username, user.RoleName);
             var newRefreshToken = await _service.GenerateRefreshToken(user.Username);
             _service.SetRefreshToken(newRefreshToken.Data, user);
-            return Ok(newToken);
+            return Ok(newToken.Data);
         }
 
         
