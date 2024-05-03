@@ -26,7 +26,7 @@ namespace BaseProject.Controllers
         public async Task<ActionResult> GetMe()
         {
             var user = await _service.GetMe();
-            return Ok(user);
+            return Ok(user.Data);
         }
 
         [AllowAnonymous]
@@ -54,7 +54,9 @@ namespace BaseProject.Controllers
                 return BadRequest(login.ErrorMessage);
             }
             var accessToken = await _service.GenerateAccessToken(login.Data.Username, login.Data.RoleName);
-            return Ok(accessToken);
+            var refreshToken = await _service.GenerateRefreshToken(login.Data.Username);
+            _service.SetRefreshToken(refreshToken.Data, login.Data);
+            return Ok(accessToken.Data);
         }
     }
 }

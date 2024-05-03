@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DTO;
+using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -114,6 +115,45 @@ namespace Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.WriteToken(tokenDescriptor);
             return OperationResult<string>.Success(token);
+        }
+
+        public async Task<OperationResult<string>> GenerateRefreshToken(string username)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Secret));
+            var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, username),
+            };
+
+            var tokenDescriptor = new JwtSecurityToken
+                (
+                    _jwt.Issuer,
+                    _jwt.Audience,
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddMinutes(_jwt.ExpiryRefreshMinutes),
+                    signingCredentials: credential
+                );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.WriteToken(tokenDescriptor);
+            return OperationResult<string>.Success(token);
+        }
+
+        public void SetRefreshToken(string newRefreshToken, UserDTO user)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddMinutes(_jwt.ExpiryRefreshMinutes)
+            };
+            _httpCont.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, cookieOptions);
+
+            user.RefreshToken = newRefreshToken;
+            user.TokenCreated = DateTime.UtcNow;
+            user.TokenExpires = DateTime.UtcNow.AddMinutes(_jwt.ExpiryRefreshMinutes);
+
+            _user.Update(user);
         }
     }
 }
