@@ -1,6 +1,6 @@
 ﻿using DTO;
 using Microsoft.AspNetCore.Mvc;
-using Services;
+using Services.Interface;
 
 namespace BaseProject.Controllers
 {
