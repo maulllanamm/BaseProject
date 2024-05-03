@@ -11,9 +11,9 @@ namespace Repositories
             _context = context;
         }
 
-        public async Task<List<User>> GetAll()
+        public async Task<User> GetByUsername(string username)
         {
-            return await base.GetAll();
+            return _context.Users.FirstOrDefault(x => x.username == username);
         }
     }
 }

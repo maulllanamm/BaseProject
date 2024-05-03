@@ -34,5 +34,17 @@ namespace BaseProject.Controllers
                 return BadRequest(result.ErrorMessage);
             }
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult> Login([FromBody] LoginDTO request)
+        {
+            var login = await _service.Login(request);
+            if (!login.IsSuccess)
+            {
+                return BadRequest(login.ErrorMessage);
+            }
+            return Ok(login.Data);
+        }
     }
 }

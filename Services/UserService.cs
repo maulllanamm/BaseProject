@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTO;
 using Entities;
+using Repositories;
 using Repositories.Base;
 using Services.Base;
 using Services.Interface;
@@ -10,11 +11,13 @@ namespace Services
     public class UserService : BaseGuidService<UserDTO, User>, IUserService
     {
         private readonly IMapper _mapper;
-        private readonly IBaseGuidRepository<User> _repository;
-        public UserService(IMapper mapper, IBaseGuidRepository<User> repository) : base(mapper, repository)
+        private readonly IUserRepository _repository;
+        private readonly IBaseGuidRepository<User> _baseRepository;
+        public UserService(IMapper mapper, IBaseGuidRepository<User> baseRepository, IUserRepository repository) : base(mapper, baseRepository)
         {
             _mapper = mapper;
             _repository = repository;
+            _baseRepository = baseRepository;
         }
 
         public async Task<List<UserDTO>> GetAll()
@@ -43,6 +46,12 @@ namespace Services
         public async Task<UserDTO> GetById(Guid id)
         {
             var entity = await base.GetById(id);
+            return _mapper.Map<UserDTO>(entity);
+        }        
+        
+        public async Task<UserDTO> GetByUsername(string username)
+        {
+            var entity = await _repository.GetByUsername(username);
             return _mapper.Map<UserDTO>(entity);
         }
 

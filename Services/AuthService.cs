@@ -48,5 +48,21 @@ namespace Services
             res.Password = "==HASH==";
             return OperationResult<UserDTO>.Success(res);
         }
+
+        public async Task<OperationResult<UserDTO>> Login(LoginDTO request)
+        {
+            var user = await _user.GetByUsername(request.Username);
+            if (user == null)
+            {
+                return OperationResult<UserDTO>.Failure("Username not found");
+            }
+
+            var passwordHash = _passwordHasher.ComputeHash(request.Password, user.PasswordSalt, _papper, _iteration);
+            if (passwordHash != user.PasswordHash)
+            {
+                return OperationResult<UserDTO>.Failure("Incorrect password");
+            }
+            return OperationResult<UserDTO>.Success(user);
+        }
     }
 }
