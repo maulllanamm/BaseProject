@@ -28,13 +28,6 @@ namespace BaseProject.Controllers
             return Ok(users);
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult> GetByListProperty(string field, string[] values)
-        //{
-        //    var users = await _userService.GetByListProperty(field, values);
-        //    return Ok(users);
-        //}
-
         [HttpGet]
         public async Task<ActionResult> GetByPage([FromQuery] int page)
         {
@@ -46,13 +39,6 @@ namespace BaseProject.Controllers
         public async Task<ActionResult> GetById([FromQuery] int id)
         {
             var users = await _userService.GetById(id);
-            return Ok(users);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Create(UserDTO userDto)
-        {
-            var users = await _userService.Create(userDto);
             return Ok(users);
         }
 

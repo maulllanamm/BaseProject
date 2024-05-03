@@ -45,16 +45,6 @@ namespace Services
             var entity = await base.GetById(id);
             return _mapper.Map<UserDTO>(entity);
         }
-        public async Task<UserDTO> Create(UserDTO userDto)
-        {
-            var res = await base.Create(userDto);
-            return _mapper.Map<UserDTO>(res);
-        }
-        public async Task<string> CreateBulk(List<UserDTO> userDto)
-        {
-            var res = await base.CreateBulk(userDto);
-            return res;
-        }
 
         public async Task<UserDTO> Update(UserDTO userDto)
         {

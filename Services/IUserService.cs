@@ -4,8 +4,6 @@ namespace Services
 {
     public interface IUserService
     {
-        Task<UserDTO> Create(UserDTO userDto);
-        Task<string> CreateBulk(List<UserDTO> userDto);
         Task<int> Delete(int id);
         Task<string> DeleteBulk(List<UserDTO> userDto);
         Task<List<UserDTO>> GetAll();
