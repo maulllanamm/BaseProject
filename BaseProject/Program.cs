@@ -74,8 +74,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// jika UseAuthentication dibawah UseAuthorization
+// maka meskipun udah login, ketika hit api yang authorize
+// dia bakalan return 401 (unauthorized)
+
+// jika UseAuthentication di comment
+// maka meskipun udah login, ketika hit api yang authorize
+// namun bakalan return 401 (unauthorized)
+
 // Middleware otentikasi JWT
 app.UseAuthentication();
+
+// jika UseAuthorization di comment
+// maka meskipun udah login, tetap bisa hit api yang authorize
+// namun bakalan error
 
 // Middleware autorisasi
 app.UseAuthorization();
