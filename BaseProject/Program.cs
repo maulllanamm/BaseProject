@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Middleware;
 using Repositories;
+using Services;
+using Services.Interface;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -71,9 +74,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Middleware otentikasi JWT
 app.UseAuthentication();
+
+// Middleware autorisasi
 app.UseAuthorization();
 
+app.UseSwaggerAuthorized();
+
+// Map endpoint ke controller
 app.MapControllers();
 
 app.Run();

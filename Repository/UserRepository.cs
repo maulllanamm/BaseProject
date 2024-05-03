@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Repositories.Base;
+using Repositories.Interface;
 
 namespace Repositories
 {

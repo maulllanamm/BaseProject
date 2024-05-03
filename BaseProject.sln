@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseProject", "BaseProject\BaseProject.csproj", "{AAED2474-B959-4939-8E79-102D0ABBA3FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseProject", "BaseProject\BaseProject.csproj", "{AAED2474-B959-4939-8E79-102D0ABBA3FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{588DB609-2A7C-4F51-BED1-FEA405032394}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{588DB609-2A7C-4F51-BED1-FEA405032394}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTO", "DTO\DTO.csproj", "{07EC1882-D438-434B-8DE8-9D7BA9301C31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTO", "DTO\DTO.csproj", "{07EC1882-D438-434B-8DE8-9D7BA9301C31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositories", "Repository\Repositories.csproj", "{E88C6BCD-B6E8-4E99-B9E1-E79A747FE66A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repository\Repositories.csproj", "{E88C6BCD-B6E8-4E99-B9E1-E79A747FE66A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{E6B3A47E-FCDB-4D9F-949D-475500AED200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{E6B3A47E-FCDB-4D9F-949D-475500AED200}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Middleware", "Middleware\Middleware.csproj", "{5126ED7D-8DB7-470E-9A83-C43339060FFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E6B3A47E-FCDB-4D9F-949D-475500AED200}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6B3A47E-FCDB-4D9F-949D-475500AED200}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6B3A47E-FCDB-4D9F-949D-475500AED200}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5126ED7D-8DB7-470E-9A83-C43339060FFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5126ED7D-8DB7-470E-9A83-C43339060FFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5126ED7D-8DB7-470E-9A83-C43339060FFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5126ED7D-8DB7-470E-9A83-C43339060FFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

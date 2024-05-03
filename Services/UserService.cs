@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using DTO;
 using Entities;
-using Repositories;
 using Repositories.Base;
+using Repositories.Interface;
 using Services.Base;
 using Services.Interface;
 

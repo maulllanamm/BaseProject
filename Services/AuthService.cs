@@ -15,14 +15,16 @@ namespace Services
     {
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpCont;
-        private readonly IRoleService _role;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IUserService _user;
+        private readonly IRoleService _role;
+        private readonly IPermissionService _permission;
+        private readonly IRolePermissionService _rolePermission;
         private readonly JwtDTO _jwt;
 
         private readonly string _papper = "v81IKJ3ZBFgwc2AdnYeOLhUn9muUtIQ0";
         private readonly int _iteration = 3;
-        public AuthService(IRoleService role, IPasswordHasher passwordHasher, IUserService user, IMapper mapper, IOptions<JwtDTO> jwt, IHttpContextAccessor httpCont)
+        public AuthService(IRoleService role, IPasswordHasher passwordHasher, IUserService user, IMapper mapper, IOptions<JwtDTO> jwt, IHttpContextAccessor httpCont, IPermissionService permission = null, IRolePermissionService rolePermission = null)
         {
             _role = role;
             _passwordHasher = passwordHasher;
@@ -30,6 +32,8 @@ namespace Services
             _mapper = mapper;
             _jwt = jwt.Value;
             _httpCont = httpCont;
+            _permission = permission;
+            _rolePermission = rolePermission;
         }
 
         public async Task<OperationResult<GetMeDTO>> GetMe()
@@ -182,6 +186,40 @@ namespace Services
                 return OperationResult<ClaimsPrincipal>.Failure("Invalid token");
             }
             return OperationResult<ClaimsPrincipal>.Success(principal);
+        }
+
+        public async Task<OperationResult<bool>> IsRequestPermitted()
+        {
+            var getMe = await GetMe();
+            var username = getMe.Data.Username;
+            var role = getMe.Data.Role;
+            var path = _httpCont.HttpContext.Request.Path.Value;
+            var method = _httpCont.HttpContext.Request.Method.ToString();
+
+            if (role == "Administrator")
+            {
+                return OperationResult<bool>.Success(true);
+            }
+
+            var roles = await _role.GetAll();
+            var permissions = await _permission.GetAll();
+            var rolePermissions = await _rolePermission.GetAll();
+
+            var myRole = roles.FirstOrDefault(x => x.Name == role);
+            if (myRole == null)
+            {
+                return OperationResult<bool>.Success(true);
+            }
+            var myRolePermissions = rolePermissions.Where(x => x.role_id == myRole.Id).Select(x => x.permission_id).ToList();
+            var myPermissions = permissions.Where(x => myRolePermissions.Contains(x.Id));
+
+            var checkPermission = myPermissions.FirstOrDefault(x => x.HttpMethod == method && x.Path == path);
+            if (checkPermission == null)
+            {
+                return OperationResult<bool>.Failure("You don't have permission");
+            }
+            return OperationResult<bool>.Success(true);
+
         }
     }
 }

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Middleware\Middleware.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 

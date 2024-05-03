@@ -91,5 +91,7 @@ namespace BaseProject.Controllers
             _service.SetRefreshToken(newRefreshToken.Data, user);
             return Ok(newToken);
         }
+
+        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Repositories;
 using Repositories.Base;
+using Repositories.Interface;
 using Services;
 using Services.Interface;
 
@@ -13,6 +14,8 @@ namespace Marketplace
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IPermissionService, PermissionService>();
+            services.AddScoped<IRolePermissionService, RolePermissionService>();
 
             return services;
         }
@@ -23,6 +26,7 @@ namespace Marketplace
             services.AddScoped(typeof(IBaseGuidRepository<>), typeof(BaseGuidRepository<>));
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
 
             services.AddTransient<DataContext>();
             services.AddHttpContextAccessor();

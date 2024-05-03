@@ -13,5 +13,6 @@ namespace Services.Interface
         public Task<OperationResult<string>> GenerateRefreshToken(string username);
         public void SetRefreshToken(string newRefreshToken, UserDTO user);
         public Task<OperationResult<ClaimsPrincipal>> ValidateAccessToken(string token);
+        public Task<OperationResult<bool>> IsRequestPermitted();
     }
 }
