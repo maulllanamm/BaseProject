@@ -80,7 +80,7 @@ app.UseAuthentication();
 // Middleware autorisasi
 app.UseAuthorization();
 
-app.UseSwaggerAuthorized();
+app.UseMiddleware<BaseMiddleware>();
 
 // Map endpoint ke controller
 app.MapControllers();
