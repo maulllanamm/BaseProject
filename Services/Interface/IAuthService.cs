@@ -1,5 +1,6 @@
 ﻿using DTO;
 using Entities;
+using System.Security.Claims;
 
 namespace Services.Interface
 {
@@ -11,5 +12,6 @@ namespace Services.Interface
         public Task<OperationResult<string>> GenerateAccessToken(string username, string roleName);
         public Task<OperationResult<string>> GenerateRefreshToken(string username);
         public void SetRefreshToken(string newRefreshToken, UserDTO user);
+        public Task<OperationResult<ClaimsPrincipal>> ValidateAccessToken(string token);
     }
 }

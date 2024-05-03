@@ -53,7 +53,7 @@ namespace Services
         public async Task<OperationResult<UserDTO>> Register(RegisterDTO request)
         {
             var role = await _role.GetById(request.RoleId);
-            if(role is null)
+            if (role is null)
             {
                 return OperationResult<UserDTO>.Failure("Role not found.");
             }
@@ -154,6 +154,34 @@ namespace Services
             user.TokenExpires = DateTime.UtcNow.AddMinutes(_jwt.ExpiryRefreshMinutes);
 
             _user.Update(user);
+        }
+
+        public async Task<OperationResult<ClaimsPrincipal>> ValidateAccessToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Secret));
+
+            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                IssuerSigningKey = key,
+                ValidIssuer = _jwt.Issuer,
+                ValidAudience = _jwt.Audience,
+                ClockSkew = TimeSpan.Zero
+            }, out var validatedToken);
+
+
+            var jsonToken = validatedToken as JwtSecurityToken;
+
+            var isValidToken = jsonToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature, StringComparison.InvariantCultureIgnoreCase);
+            if (jsonToken == null || !isValidToken)
+            {
+                return OperationResult<ClaimsPrincipal>.Failure("Invalid token");
+            }
+            return OperationResult<ClaimsPrincipal>.Success(principal);
         }
     }
 }

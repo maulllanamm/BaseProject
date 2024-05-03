@@ -3,6 +3,7 @@ using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interface;
+using System.Security.Claims;
 
 namespace BaseProject.Controllers
 {
@@ -57,6 +58,38 @@ namespace BaseProject.Controllers
             var refreshToken = await _service.GenerateRefreshToken(login.Data.Username);
             _service.SetRefreshToken(refreshToken.Data, login.Data);
             return Ok(accessToken.Data);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RefreshToken()
+        {
+            var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return BadRequest("Invalid token.");
+            }
+
+            var principal = await _service.ValidateAccessToken(refreshToken);
+            if (!principal.IsSuccess)
+            {
+                return NotFound(principal.ErrorMessage);
+            }
+
+            // Mendapatkan informasi user dari token
+            var username = principal.Data.FindFirstValue(ClaimTypes.Name);
+            var user = await _userService.GetByUsername(username);
+            if (!user.RefreshToken.Equals(refreshToken))
+            {
+                return BadRequest("Invalid Refresh Token.");
+            }
+            else if (user.TokenExpires < DateTime.Now)
+            {
+                return Unauthorized("Token expired.");
+            }
+            var newToken = await _service.GenerateAccessToken(user.Username, user.RoleName);
+            var newRefreshToken = await _service.GenerateRefreshToken(user.Username);
+            _service.SetRefreshToken(newRefreshToken.Data, user);
+            return Ok(newToken);
         }
     }
 }
