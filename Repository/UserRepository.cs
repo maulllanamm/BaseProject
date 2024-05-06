@@ -15,6 +15,11 @@ namespace Repositories
         public async Task<User> GetByUsername(string username)
         {
             return _context.Users.FirstOrDefault(x => x.username == username);
+        }        
+
+        public async Task<User> GetByVerifyToken(string verifyToken)
+        {
+            return _context.Users.FirstOrDefault(x => x.verify_token == verifyToken);
         }
     }
 }

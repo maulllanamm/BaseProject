@@ -60,6 +60,18 @@ namespace BaseProject.Controllers
             return Ok(accessToken.Data);
         }
 
+
+        [HttpPost]
+        public async Task<ActionResult> Verify([FromBody] string verifyToken)
+        {
+            var verify = await _service.Verify(verifyToken);
+            if (!verify.IsSuccess)
+            {
+                return BadRequest(verify.ErrorMessage);
+            }
+            return Ok(verify.Data);
+        }
+
         [HttpPost]
         public async Task<ActionResult> RefreshToken()
         {

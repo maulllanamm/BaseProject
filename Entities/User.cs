@@ -17,7 +17,7 @@ namespace Entities
         public DateTimeOffset? refresh_token_created { get; set; }
         public DateTimeOffset? refresh_token_expires { get; set; }
         public string? verify_token{ get; set; }
-        public DateTimeOffset? verify_token_created{ get; set; }
+        public DateTimeOffset? verify_date{ get; set; }
         public string? password_reset_token{ get; set; }
         public DateTimeOffset? password_reset_expires{ get; set; }
     }

@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Services.Interface;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -75,7 +76,6 @@ namespace Services
                 Address = request.Address,
                 PasswordHash = _passwordHasher.ComputeHash(request.Password, salt, _papper, _iteration),
                 VerifyToken = verifyToken.Data,
-                VerifyTokenCreated = DateTime.UtcNow
             };
 
             user = await _user.Create(user);
@@ -98,11 +98,23 @@ namespace Services
                 return OperationResult<UserDTO>.Failure("Incorrect password");
             }
 
-            if(user.VerifyTokenCreated is null)
+            if(user.VerifyDate is null)
             {
                 return OperationResult<UserDTO>.Failure("User is not verified");
             }
             return OperationResult<UserDTO>.Success(user);
+        }
+
+        public async Task<OperationResult<string>> Verify(string verifyToken)
+        {
+            var user = await _user.GetByVerifyToken(verifyToken);
+            if(user is null)
+            {
+                return OperationResult<string>.Failure("Invalid token");
+            }
+            user.VerifyDate = DateTime.UtcNow;
+            await _user.Update(user);
+            return OperationResult<string>.Success("User verified");
         }
 
         public async Task<OperationResult<string>> GenerateVerifyToken(string email)

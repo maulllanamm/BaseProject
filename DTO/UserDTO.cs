@@ -18,7 +18,7 @@ namespace DTO
         public DateTimeOffset? RefreshTokenCreated { get; set; }
         public DateTimeOffset? RefreshTokenExpires { get; set; }
         public string? VerifyToken { get; set; }
-        public DateTimeOffset? VerifyTokenCreated { get; set; }
+        public DateTimeOffset? VerifyDate { get; set; }
         public string? PasswordResetToken { get; set; }
         public DateTimeOffset? PasswordResetExpires { get; set; }
 

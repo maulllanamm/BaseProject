@@ -55,6 +55,12 @@ namespace Services
             return _mapper.Map<UserDTO>(entity);
         }
 
+        public async Task<UserDTO> GetByVerifyToken(string verifyToken)
+        {
+            var entity = await _repository.GetByVerifyToken(verifyToken);
+            return _mapper.Map<UserDTO>(entity);
+        }
+
         public async Task<UserDTO> Update(UserDTO userDto)
         {
             var res = await base.Update(userDto);
