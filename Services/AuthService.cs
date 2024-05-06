@@ -62,6 +62,7 @@ namespace Services
                 return OperationResult<UserDTO>.Failure("Role not found.");
             }
             var salt = _passwordHasher.GenerateSalt();
+            var verifyToken = await GenerateVerifyToken(request.Email);
             var user = new UserDTO
             {
                 RoleId = role.Id,
@@ -72,7 +73,9 @@ namespace Services
                 FullName = request.FullName,
                 PhoneNumber = request.PhoneNumber,
                 Address = request.Address,
-                PasswordHash = _passwordHasher.ComputeHash(request.Password, salt, _papper, _iteration)
+                PasswordHash = _passwordHasher.ComputeHash(request.Password, salt, _papper, _iteration),
+                VerifyToken = verifyToken.Data,
+                VerifyTokenCreated = DateTime.UtcNow
             };
 
             user = await _user.Create(user);
@@ -94,7 +97,35 @@ namespace Services
             {
                 return OperationResult<UserDTO>.Failure("Incorrect password");
             }
+
+            if(user.VerifyTokenCreated is null)
+            {
+                return OperationResult<UserDTO>.Failure("User is not verified");
+            }
             return OperationResult<UserDTO>.Success(user);
+        }
+
+        public async Task<OperationResult<string>> GenerateVerifyToken(string email)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Secret));
+            var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, email),
+            };
+
+            var tokenDescriptor = new JwtSecurityToken
+                (
+                    _jwt.Issuer,
+                    _jwt.Audience,
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddDays(7),
+                    signingCredentials: credential
+                );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.WriteToken(tokenDescriptor);
+            return OperationResult<string>.Success(token);
         }
 
         public async Task<OperationResult<string>> GenerateAccessToken(string username, string roleName)
