@@ -3,6 +3,7 @@ using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interface;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace BaseProject.Controllers
@@ -68,6 +69,15 @@ namespace BaseProject.Controllers
             if (!verify.IsSuccess)
             {
                 return BadRequest(verify.ErrorMessage);
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(verifyToken) as JwtSecurityToken;
+
+            DateTime expires = securityToken.ValidTo;
+            if (expires < DateTime.Now)
+            {
+                return Unauthorized("Token expired.");
             }
             return Ok(verify.Data);
         }
