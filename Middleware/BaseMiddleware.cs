@@ -1,5 +1,4 @@
 ﻿using DTO;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -11,10 +10,10 @@ namespace Middleware
     public class BaseMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly JwtDTO _jwt;
+        private readonly JwtManagement _jwt;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public BaseMiddleware(RequestDelegate next, IServiceScopeFactory serviceScopeFactory, IOptions<JwtDTO> jwt)
+        public BaseMiddleware(RequestDelegate next, IServiceScopeFactory serviceScopeFactory, IOptions<JwtManagement> jwt)
         {
             _next = next;
             _serviceScopeFactory = serviceScopeFactory;

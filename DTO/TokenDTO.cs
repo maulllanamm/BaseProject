@@ -1,6 +1,6 @@
 ﻿namespace DTO
 {
-    public class JwtDTO
+    public class JwtManagement
     {
         public string Secret { get; set; }
         public string Issuer { get; set; }

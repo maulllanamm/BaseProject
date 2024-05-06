@@ -20,11 +20,11 @@ namespace Services
         private readonly IRoleService _role;
         private readonly IPermissionService _permission;
         private readonly IRolePermissionService _rolePermission;
-        private readonly JwtDTO _jwt;
+        private readonly JwtManagement _jwt;
 
         private readonly string _papper = "v81IKJ3ZBFgwc2AdnYeOLhUn9muUtIQ0";
         private readonly int _iteration = 3;
-        public AuthService(IRoleService role, IPasswordHasher passwordHasher, IUserService user, IMapper mapper, IOptions<JwtDTO> jwt, IHttpContextAccessor httpCont, IPermissionService permission = null, IRolePermissionService rolePermission = null)
+        public AuthService(IRoleService role, IPasswordHasher passwordHasher, IUserService user, IMapper mapper, IOptions<JwtManagement> jwt, IHttpContextAccessor httpCont, IPermissionService permission = null, IRolePermissionService rolePermission = null)
         {
             _role = role;
             _passwordHasher = passwordHasher;

@@ -6,8 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Middleware;
 using Repositories;
-using Services;
-using Services.Interface;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -22,8 +20,12 @@ builder.Services.AddInfrastructureServices();
 builder.Services.AddAutoMapper(typeof(AutoMapConfig));
 
 // ngambil token management dari appseting.json (option pattern)
-builder.Services.Configure<JwtDTO>(builder.Configuration.GetSection("TokenManagement"));
-var token = builder.Configuration.GetSection("TokenManagement").Get<JwtDTO>();
+builder.Services.Configure<JwtManagement>(builder.Configuration.GetSection("TokenManagement"));
+var token = builder.Configuration.GetSection("TokenManagement").Get<JwtManagement>();
+
+// ngambil email management dari appseting.json (option pattern)
+builder.Services.Configure<EmailManagement>(builder.Configuration.GetSection("EmailManagement"));
+var email = builder.Configuration.GetSection("EmailManagement").Get<EmailManagement>();
 
 // Add services to the container.
 builder.Services.AddControllers();
