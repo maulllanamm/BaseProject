@@ -114,6 +114,15 @@ namespace BaseProject.Controllers
             return Ok(newToken.Data);
         }
 
-        
+        [HttpPost]
+        public async Task<ActionResult> ForgotPassword([FromBody] string email)
+        {
+            var forgotPassword = await _service.ForgotPassword(email);
+            if (!forgotPassword.IsSuccess)
+            {
+                return BadRequest(forgotPassword.ErrorMessage);
+            }
+            return Ok(forgotPassword.Data);
+        }
     }
 }

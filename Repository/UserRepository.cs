@@ -21,5 +21,10 @@ namespace Repositories
         {
             return _context.Users.FirstOrDefault(x => x.verify_token == verifyToken);
         }
+
+        public async Task<User> GetByEmail(string email)
+        {
+            return _context.Users.FirstOrDefault(x => x.email == email);
+        }
     }
 }

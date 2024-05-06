@@ -9,6 +9,7 @@ namespace Services.Interface
         Task<UserDTO> GetById(Guid id);
         Task<UserDTO> GetByUsername(string username);
         Task<UserDTO> GetByVerifyToken(string verifyToken);
+        Task<UserDTO> GetByEmail(string email);
         Task<List<UserDTO>> GetByListId(List<Guid> listId);
         Task<List<UserDTO>> GetByListProperty(string field, string[] values);
         Task<UserDTO> Create(UserDTO userDto);

@@ -61,6 +61,12 @@ namespace Services
             return _mapper.Map<UserDTO>(entity);
         }
 
+        public async Task<UserDTO> GetByEmail(string email)
+        {
+            var entity = await _repository.GetByEmail(email);
+            return _mapper.Map<UserDTO>(entity);
+        }
+
         public async Task<UserDTO> Update(UserDTO userDto)
         {
             var res = await base.Update(userDto);

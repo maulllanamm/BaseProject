@@ -117,6 +117,49 @@ namespace Services
             return OperationResult<string>.Success("User verified");
         }
 
+        public async Task<OperationResult<string>> ForgotPassword(string email)
+        {
+            var user = await _user.GetByEmail(email);
+            if (user is null)
+            {
+                return OperationResult<string>.Failure("User not found");
+            }
+            var passwordResetToken = await GeneratePasswordResetToken(user.Username, user.Email);
+            user.PasswordResetToken = passwordResetToken.Data;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(passwordResetToken.Data) as JwtSecurityToken;
+
+            user.PasswordResetExpires = securityToken.ValidTo;
+            await _user.Update(user);
+
+            return OperationResult<string>.Success("You may now reset your password");
+        }
+
+        public async Task<OperationResult<string>> GeneratePasswordResetToken(string username , string email)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Secret));
+            var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Email, email),
+            };
+
+            var tokenDescriptor = new JwtSecurityToken
+                (
+                    _jwt.Issuer,
+                    _jwt.Audience,
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddDays(1),
+                    signingCredentials: credential
+                );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.WriteToken(tokenDescriptor);
+            return OperationResult<string>.Success(token);
+        }
+
         public async Task<OperationResult<string>> GenerateVerifyToken(string email)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Secret));
