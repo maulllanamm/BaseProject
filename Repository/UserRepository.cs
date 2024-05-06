@@ -26,5 +26,10 @@ namespace Repositories
         {
             return _context.Users.FirstOrDefault(x => x.email == email);
         }
+        
+        public async Task<User> GetByPasswordResetToken(string passwordToken)
+        {
+            return _context.Users.FirstOrDefault(x => x.password_reset_token == passwordToken);
+        }
     }
 }

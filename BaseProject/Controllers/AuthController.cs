@@ -1,4 +1,5 @@
 ﻿using DTO;
+using DTO.Base;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -123,6 +124,17 @@ namespace BaseProject.Controllers
                 return BadRequest(forgotPassword.ErrorMessage);
             }
             return Ok(forgotPassword.Data);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDTO request)
+        {
+            var resetPassword = await _service.ResetPassword(request);
+            if (!resetPassword.IsSuccess)
+            {
+                return BadRequest(resetPassword.ErrorMessage);
+            }
+            return Ok(resetPassword.Data);
         }
     }
 }

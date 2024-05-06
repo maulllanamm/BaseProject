@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DTO;
+using DTO.Base;
 using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -134,6 +135,36 @@ namespace Services
             await _user.Update(user);
 
             return OperationResult<string>.Success("You may now reset your password");
+        }
+
+        public async Task<OperationResult<string>> ResetPassword(ResetPasswordDTO request)
+        {
+            var user = await _user.GetByPasswordResetToken(request.PasswordResetToken);
+            if (user is null)
+            {
+                return OperationResult<string>.Failure("Invalid token");
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(request.PasswordResetToken) as JwtSecurityToken;
+
+            if (securityToken.ValidTo < user.PasswordResetExpires)
+            {
+                return OperationResult<string>.Failure("Token expired");
+            }
+
+            if (request.NewPassword != request.ConfirmPassword)
+            {
+                return OperationResult<string>.Failure("Password doesn't match");
+            }
+            var newPassword = _passwordHasher.ComputeHash(request.NewPassword, user.PasswordSalt, _papper, _iteration);
+            user.PasswordHash = newPassword;
+            user.PasswordResetToken = null;
+            user.PasswordResetExpires = null;
+
+            await _user.Update(user);
+
+            return OperationResult<string>.Success("Password successfully reset");
         }
 
         public async Task<OperationResult<string>> GeneratePasswordResetToken(string username , string email)

@@ -5,6 +5,7 @@ using Repositories.Base;
 using Repositories.Interface;
 using Services.Base;
 using Services.Interface;
+using System.Threading.Tasks;
 
 namespace Services
 {
@@ -64,6 +65,12 @@ namespace Services
         public async Task<UserDTO> GetByEmail(string email)
         {
             var entity = await _repository.GetByEmail(email);
+            return _mapper.Map<UserDTO>(entity);
+        }        
+        
+        public async Task<UserDTO> GetByPasswordResetToken(string passwordToken)
+        {
+            var entity = await _repository.GetByPasswordResetToken(passwordToken);
             return _mapper.Map<UserDTO>(entity);
         }
 
