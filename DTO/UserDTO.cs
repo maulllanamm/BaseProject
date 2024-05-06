@@ -15,7 +15,12 @@ namespace DTO
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public string? RefreshToken { get; set; }
-        public DateTimeOffset? TokenCreated { get; set; }
-        public DateTimeOffset? TokenExpires { get; set; }
+        public DateTimeOffset? RefreshTokenCreated { get; set; }
+        public DateTimeOffset? RefreshTokenExpires { get; set; }
+        public string? VerifyToken { get; set; }
+        public DateTimeOffset? VerifyTokenCreated { get; set; }
+        public string? PasswordResetToken { get; set; }
+        public DateTimeOffset? PasswordResetExpires { get; set; }
+
     }
 }

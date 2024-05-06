@@ -154,8 +154,8 @@ namespace Services
             _httpCont.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, cookieOptions);
 
             user.RefreshToken = newRefreshToken;
-            user.TokenCreated = DateTime.UtcNow;
-            user.TokenExpires = DateTime.UtcNow.AddMinutes(_jwt.ExpiryRefreshMinutes);
+            user.RefreshTokenCreated = DateTime.UtcNow;
+            user.RefreshTokenExpires = DateTime.UtcNow.AddMinutes(_jwt.ExpiryRefreshMinutes);
 
             _user.Update(user);
         }

@@ -14,7 +14,11 @@ namespace Entities
         public string phone_number { get; set; }
         public string address { get; set; }
         public string? refresh_token { get; set; }
-        public DateTimeOffset? token_created { get; set; }
-        public DateTimeOffset? token_expires { get; set; }
+        public DateTimeOffset? refresh_token_created { get; set; }
+        public DateTimeOffset? refresh_token_expires { get; set; }
+        public string? verify_token{ get; set; }
+        public DateTimeOffset? verify_token_created{ get; set; }
+        public string? password_reset_token{ get; set; }
+        public DateTimeOffset? password_reset_expires{ get; set; }
     }
 }

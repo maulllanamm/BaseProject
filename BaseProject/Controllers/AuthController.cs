@@ -82,7 +82,7 @@ namespace BaseProject.Controllers
             {
                 return BadRequest("Invalid Refresh Token.");
             }
-            else if (user.TokenExpires < DateTime.Now)
+            else if (user.RefreshTokenExpires < DateTime.Now)
             {
                 return Unauthorized("Token expired.");
             }
