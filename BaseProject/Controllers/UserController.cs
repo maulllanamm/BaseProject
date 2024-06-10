@@ -1,6 +1,7 @@
 ﻿using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interface;
+using System.Collections;
 
 namespace BaseProject.Controllers
 {
@@ -9,14 +10,25 @@ namespace BaseProject.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly ICacheService _cacheService;
+        public UserController(IUserService userService, ICacheService cacheService)
         {
             _userService = userService;
+            _cacheService = cacheService;
         }
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
+            var cacheData = _cacheService.GetData<IEnumerable<UserDTO>>("users");
+            if(cacheData != null && cacheData.Count() > 0)
+            {
+                return Ok(cacheData);
+            }
             var users = await _userService.GetAll();
+
+            // set expire time
+            var expiryTime = DateTime.Now.AddSeconds(10);
+            _cacheService.SetData<IEnumerable<UserDTO>>("users", users,expiryTime);
             return Ok(users);
         }
 
