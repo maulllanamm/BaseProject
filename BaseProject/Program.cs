@@ -27,6 +27,8 @@ var token = builder.Configuration.GetSection("TokenManagement").Get<JwtManagemen
 builder.Services.Configure<EmailManagement>(builder.Configuration.GetSection("EmailManagement"));
 var email = builder.Configuration.GetSection("EmailManagement").Get<EmailManagement>();
 
+// add redis caching
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -17,6 +17,7 @@ namespace Marketplace
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IRolePermissionService, RolePermissionService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ICacheService, CacheService>();
 
             return services;
         }
