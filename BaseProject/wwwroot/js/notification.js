@@ -21,16 +21,15 @@ connectionNotificationHub.on("SendMessage", (value) => {
 });
 
 // Metode untuk mengirim pesan ke hub
-function SendMessageOnClient() {
-    connectionNotificationHub.send("SendMessage", "Hello World");
-}
+//function SendMessageOnClient() {
+//    connectionNotificationHub.invoke("SendMessage", "Hello World");
+//}
 
 // Mulai koneksi dan tangani kesalahan
 function startConnection() {
     connectionNotificationHub.start()
         .then(() => {
             console.log("Connect to Notification hub Successful");
-            SendMessageOnClient();
         })
         .catch((err) => {
             console.error("Failed to connect to Notification hub", err);
