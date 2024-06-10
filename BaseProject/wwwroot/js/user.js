@@ -10,6 +10,11 @@ connectionUserHub.on("UpdateTotalViews", (value) => {
     newCountSpan.innerText = value.toString();
 });
 
+connectionUserHub.on("UpdateTotalActiveUsers", (value) => {
+    var newCountSpan = document.getElementById("totalActiveUsersCounter");
+    newCountSpan.innerText = value.toString();
+});
+
 // Metode untuk mengirim value userCount ke hub
 function newWindowLoadedOnClient() {
     connectionUserHub.send("NewWindowLoaded");
