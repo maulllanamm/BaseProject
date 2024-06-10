@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Middleware;
 using Repositories;
-using Services;
+using Services.Hub;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -112,6 +112,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
     endpoints.MapHub<NotificationHub>("/hubs/notification");
+    endpoints.MapHub<UserHub>("/hubs/userCount");
     endpoints.MapRazorPages();
 });
 

@@ -1,3 +1,4 @@
+// create connection
 var connectionNotificationHub = new signalR
     .HubConnectionBuilder()
     .withUrl("/hubs/notification")
@@ -21,7 +22,6 @@ connectionNotificationHub.on("SendMessage", (value) => {
 
 // Metode untuk mengirim pesan ke hub
 function SendMessageOnClient() {
-    // Ganti "Hello World" dengan data yang ingin Anda kirim
     connectionNotificationHub.send("SendMessage", "Hello World");
 }
 
@@ -30,6 +30,7 @@ function startConnection() {
     connectionNotificationHub.start()
         .then(() => {
             console.log("Connect to Notification hub Successful");
+            SendMessageOnClient();
         })
         .catch((err) => {
             console.error("Failed to connect to Notification hub", err);
