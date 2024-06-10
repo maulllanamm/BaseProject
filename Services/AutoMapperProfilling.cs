@@ -17,6 +17,9 @@ namespace Marketplace
 
             CreateMap<RoleDTO, Role>().EqualityComparison((odto, o) => odto.Id == o.id).ReverseMap();
             CreateMap<Role, RoleDTO>().EqualityComparison((odto, o) => odto.id == o.Id).ReverseMap();
+
+            CreateMap<DummyDTO, Dummy>().EqualityComparison((odto, o) => odto.Id == o.id).ReverseMap();
+            CreateMap<Dummy, DummyDTO>().EqualityComparison((odto, o) => odto.id == o.Id).ReverseMap();
         }
     }
 }

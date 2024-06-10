@@ -18,6 +18,7 @@ namespace Marketplace
             services.AddScoped<IRolePermissionService, RolePermissionService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<IDummyService, DummyService>();
 
             return services;
         }
@@ -27,6 +28,7 @@ namespace Marketplace
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(IBaseGuidRepository<>), typeof(BaseGuidRepository<>));
 
+            services.AddScoped<IDummyRepository, DummyRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
 
