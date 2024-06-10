@@ -19,11 +19,12 @@ namespace Services.Hub
             Clients.All.UpdateTotalActiveUsers(TotalActiveUsers).GetAwaiter().GetResult() ;
             return base.OnConnectedAsync();
         }
-        public async Task NewWindowLoaded()
+        public async Task<int> NewWindowLoaded()
         {
             TotalViews++;
             // update total views ke semua client yang terkoneksi ke user hub
             await Clients.All.UpdateTotalViews(TotalViews);
+            return TotalViews;
         }
     }
 }

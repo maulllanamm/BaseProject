@@ -17,7 +17,7 @@ connectionUserHub.on("UpdateTotalActiveUsers", (value) => {
 
 // Metode untuk mengirim value userCount ke hub
 function newWindowLoadedOnClient() {
-    connectionUserHub.send("NewWindowLoaded");
+    connectionUserHub.invoke("NewWindowLoaded").then((value) => console.log(value));
 }
 
 // Mulai koneksi dan tangani kesalahan
