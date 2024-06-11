@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Middleware;
 using Repositories;
+using Services.Hub;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -27,7 +28,11 @@ var token = builder.Configuration.GetSection("TokenManagement").Get<JwtManagemen
 builder.Services.Configure<EmailManagement>(builder.Configuration.GetSection("EmailManagement"));
 var email = builder.Configuration.GetSection("EmailManagement").Get<EmailManagement>();
 
-// add redis caching
+// Add signalR
+builder.Services.AddSignalR();
+
+// Add Pages
+builder.Services.AddRazorPages();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -98,7 +103,17 @@ app.UseAuthorization();
 
 app.UseMiddleware<BaseMiddleware>();
 
-// Map endpoint ke controller
-app.MapControllers();
+app.UseRouting();
+
+app.UseStaticFiles();
+
+// Map endpoint 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<NotificationHub>("/hubs/notification");
+    endpoints.MapHub<UserHub>("/hubs/userCount");
+    endpoints.MapRazorPages();
+});
 
 app.Run();
