@@ -11,14 +11,17 @@ namespace BaseProject.Controllers
     {
         private readonly IUserService _userService;
         private readonly ICacheService _cacheService;
-        public UserController(IUserService userService, ICacheService cacheService)
+        private readonly ILogger<UserController> _logger;
+        public UserController(IUserService userService, ICacheService cacheService, ILogger<UserController> logger)
         {
             _userService = userService;
             _cacheService = cacheService;
+            _logger = logger;
         }
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
+            _logger.LogInformation("UserController GetAll", DateTime.UtcNow);
             var cacheData = _cacheService.GetData<IEnumerable<UserDTO>>("users");
             if(cacheData != null && cacheData.Count() > 0)
             {
