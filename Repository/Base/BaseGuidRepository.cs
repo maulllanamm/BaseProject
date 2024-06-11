@@ -1,4 +1,5 @@
-﻿using Entities.Base;
+﻿using EFCore.BulkExtensions;
+using Entities.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.Base
@@ -121,7 +122,12 @@ namespace Repositories.Base
 
         public async Task<int> UpdateBulk(List<TGuidEntity> entities)
         {
-            _context.Set<TGuidEntity>().BulkUpdate(entities);
+            foreach (var entity in entities)
+            {
+                _context.Entry(entity).State = EntityState.Modified;
+            }
+
+            await _context.SaveChangesAsync();
 
             return entities.Count();
         }
@@ -140,8 +146,8 @@ namespace Repositories.Base
 
         public async Task<int> DeleteBulk(List<TGuidEntity> entities)
         {
-            _context.Set<TGuidEntity>().BulkDelete(entities);
-
+             _context.Set<TGuidEntity>().RemoveRange(entities);
+            await _context.SaveChangesAsync();
             return entities.Count();
         }
 
