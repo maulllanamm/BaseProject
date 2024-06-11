@@ -11,6 +11,7 @@ using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 using Services.Hub;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -131,7 +132,7 @@ app.Run();
 void ConfigureLogs()
 {
     // Get the environtment which the application is running on
-    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONTMENT");
+    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
 
     // Get the configuration
@@ -146,18 +147,20 @@ void ConfigureLogs()
         .Enrich.WithExceptionDetails() // Add detail Exception
         .WriteTo.Debug()
         .WriteTo.Console()
-        .WriteTo.Elasticsearch(ConfigureElasticSearch(configuration))
+        .WriteTo.Elasticsearch(ConfigureElasticSearch(configuration, env))
         .CreateLogger();
 }
 
 
-ElasticsearchSinkOptions ConfigureElasticSearch(IConfigurationRoot configuration)
+ElasticsearchSinkOptions ConfigureElasticSearch(IConfigurationRoot configuration, string env)
 {
     var uri = new Uri(configuration["ElasticSearchConfiguration:Url"]);
+    var assemblyName = Assembly.GetEntryAssembly().GetName().Name.ToLower();
+    var indexFormat = $"{assemblyName}-{env.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}";
     return new ElasticsearchSinkOptions(uri)
     {
         AutoRegisterTemplate = true,
-        IndexFormat = "BaseProject" // Format indeks yang lebih baik menggunakan huruf kecil
+        IndexFormat = indexFormat
     };
 }
 
