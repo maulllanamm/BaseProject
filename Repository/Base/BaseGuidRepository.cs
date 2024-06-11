@@ -1,6 +1,9 @@
 ﻿using EFCore.BulkExtensions;
 using Entities.Base;
 using Microsoft.EntityFrameworkCore;
+using Repositories.ConfigUnitOfWork;
+using System.Security.Principal;
+using System.Xml.Linq;
 
 namespace Repositories.Base
 {
@@ -67,8 +70,24 @@ namespace Repositories.Base
             entity.modified_by ??= "system";
             entity.is_deleted = false;
 
-            await _context.Set<TGuidEntity>().AddAsync(entity);
-            await _context.SaveChangesAsync(); // Simpan perubahan ke database
+            using (var unitOfWork = new UnitOfWork(_context))
+            {
+                try
+                {
+                    unitOfWork.BeginTransaction();
+
+                    await _context.Set<TGuidEntity>().AddAsync(entity);
+                    await _context.SaveChangesAsync(); // Simpan perubahan ke database
+                    unitOfWork.SaveChanges();
+
+                    unitOfWork.Commit();
+                }
+                catch (Exception)
+                {
+                    unitOfWork.Rollback();
+                    throw; // Re-throw exception untuk menyebar ke lapisan yang lebih tinggi jika perlu
+                }
+            }
             return entity;
         }
 
@@ -90,16 +109,29 @@ namespace Repositories.Base
             {
                 splitSize *= 2;
             }
-
-            var batches = entities
-                        .Select((entities, index) => (entities, index))
-                        .GroupBy(pair => pair.index / splitSize)
-                        .Select(group => group.Select(pair => pair.entities).ToList())
-                        .ToList();
-
-            foreach (var batch in batches)
+            using (var unitOfWork = new UnitOfWork(_context))
             {
-                await _context.BulkInsertAsync(batch);
+                try
+                {
+                    unitOfWork.BeginTransaction();
+                    var batches = entities
+                            .Select((entities, index) => (entities, index))
+                            .GroupBy(pair => pair.index / splitSize)
+                            .Select(group => group.Select(pair => pair.entities).ToList())
+                            .ToList();
+
+                    foreach (var batch in batches)
+                    {
+                        await _context.BulkInsertAsync(batch);
+                    }
+                    unitOfWork.Commit();
+                }
+                catch (Exception)
+                {
+                    unitOfWork.Rollback();
+                    throw; // Re-throw exception untuk menyebar ke lapisan yang lebih tinggi jika perlu
+                }
+
             }
             return entities.Count();
         }
@@ -107,14 +139,26 @@ namespace Repositories.Base
 
         public async Task<TGuidEntity> Update(TGuidEntity entity)
         {
-            var editedEntity = _context.Set<TGuidEntity>().FirstOrDefault(e => e.id == entity.id);
-
-            if (editedEntity != null)
+            using (var unitOfWork = new UnitOfWork(_context))
             {
-                // Update properti dari editedEntity dengan nilai dari TGuidEntity yang baru
-                _context.Entry(editedEntity).CurrentValues.SetValues(entity);
+                try
+                {
+                    var editedEntity = _context.Set<TGuidEntity>().FirstOrDefault(e => e.id == entity.id);
 
-                _context.SaveChanges();
+                    if (editedEntity != null)
+                    {
+                        unitOfWork.BeginTransaction();
+                        // Update properti dari editedEntity dengan nilai dari TGuidEntity yang baru
+                        _context.Entry(editedEntity).CurrentValues.SetValues(entity);
+                        _context.SaveChanges();
+                        unitOfWork.Commit();
+                    }
+                }
+                catch (Exception)
+                {
+                    unitOfWork.Rollback();
+                    throw; // Re-throw exception untuk menyebar ke lapisan yang lebih tinggi jika perlu
+                }
             }
 
             return entity;
@@ -122,12 +166,24 @@ namespace Repositories.Base
 
         public async Task<int> UpdateBulk(List<TGuidEntity> entities)
         {
-            foreach (var entity in entities)
+            using (var unitOfWork = new UnitOfWork(_context))
             {
-                _context.Entry(entity).State = EntityState.Modified;
+                try
+                {
+                    unitOfWork.BeginTransaction();
+                    foreach (var entity in entities)
+                    {
+                        _context.Entry(entity).State = EntityState.Modified;
+                    }
+                    await _context.SaveChangesAsync();
+                    unitOfWork.Commit();
+                }
+                catch (Exception)
+                {
+                    unitOfWork.Rollback();
+                    throw; // Re-throw exception untuk menyebar ke lapisan yang lebih tinggi jika perlu
+                }
             }
-
-            await _context.SaveChangesAsync();
 
             return entities.Count();
         }
@@ -137,8 +193,21 @@ namespace Repositories.Base
             var entityToDelete = _context.Set<TGuidEntity>().FirstOrDefault(e => e.id == id);
             if (entityToDelete != null)
             {
-                _context.Set<TGuidEntity>().Remove(entityToDelete);
-                await _context.SaveChangesAsync(); // Simpan perubahan ke database
+                using (var unitOfWork = new UnitOfWork(_context))
+                {
+                    try
+                    {
+                        unitOfWork.BeginTransaction();
+                        _context.Set<TGuidEntity>().Remove(entityToDelete);
+                        await _context.SaveChangesAsync(); // Simpan perubahan ke database
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        unitOfWork.Rollback();
+                        throw; // Re-throw exception untuk menyebar ke lapisan yang lebih tinggi jika perlu
+                    }
+                }
             }
 
             return id;
@@ -146,8 +215,21 @@ namespace Repositories.Base
 
         public async Task<int> DeleteBulk(List<TGuidEntity> entities)
         {
-             _context.Set<TGuidEntity>().RemoveRange(entities);
-            await _context.SaveChangesAsync();
+            using (var unitOfWork = new UnitOfWork(_context))
+            {
+                try
+                {
+                    unitOfWork.BeginTransaction();
+                    _context.Set<TGuidEntity>().RemoveRange(entities);
+                    await _context.SaveChangesAsync();
+                    unitOfWork.Commit();
+                }
+                catch (Exception)
+                {
+                    unitOfWork.Rollback();
+                    throw; // Re-throw exception untuk menyebar ke lapisan yang lebih tinggi jika perlu
+                }
+            }
             return entities.Count();
         }
 
@@ -156,8 +238,21 @@ namespace Repositories.Base
             var entityToDelete = _context.Set<TGuidEntity>().FirstOrDefault(e => e.id == id);
             if (entityToDelete != null)
             {
-                entityToDelete.is_deleted = true;
-                _context.SaveChanges();
+                using (var unitOfWork = new UnitOfWork(_context))
+                {
+                    try
+                    {
+                        unitOfWork.BeginTransaction();
+                        entityToDelete.is_deleted = true;
+                        _context.SaveChanges();
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        unitOfWork.Rollback();
+                        throw; // Re-throw exception untuk menyebar ke lapisan yang lebih tinggi jika perlu
+                    }
+                }
             }
 
             return id;
@@ -168,11 +263,25 @@ namespace Repositories.Base
             var entitiesToDelete = _context.Set<TGuidEntity>().Where(x => entitiesId.Contains(x.id)).ToList();
             if (entitiesToDelete != null)
             {
-                entitiesToDelete = entitiesToDelete.Select(x =>
+                using (var unitOfWork = new UnitOfWork(_context))
                 {
-                    x.is_deleted = true;
-                    return x;
-                }).ToList();
+                    try
+                    {
+                        unitOfWork.BeginTransaction();
+                        entitiesToDelete = entitiesToDelete.Select(x =>
+                        {
+                            x.is_deleted = true;
+                            return x;
+                        }).ToList();
+                        _context.SaveChanges();
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        unitOfWork.Rollback();
+                        throw; // Re-throw exception untuk menyebar ke lapisan yang lebih tinggi jika perlu
+                    }
+                }
             }
             return entitiesToDelete.Count();
         }
@@ -186,5 +295,7 @@ namespace Repositories.Base
         {
             return _context.Set<TGuidEntity>().Where(predicate);
         }
+
+        public void SaveChanges() => _context.SaveChanges();
     }
 }
