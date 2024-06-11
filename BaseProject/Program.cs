@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Middleware;
 using Repositories;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
 using Services.Hub;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
@@ -33,6 +36,10 @@ builder.Services.AddSignalR();
 
 // Add Pages
 builder.Services.AddRazorPages();
+
+// Add ConfigureLogs
+ConfigureLogs();
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -117,3 +124,41 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
+
+
+#region helper
+
+void ConfigureLogs()
+{
+    // Get the environtment which the application is running on
+    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONTMENT");
+
+
+    // Get the configuration
+    var configuration = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .Build();
+
+
+    // Create Logger
+    Log.Logger = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .Enrich.WithExceptionDetails() // Add detail Exception
+        .WriteTo.Debug()
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(ConfigureElasticSearch(configuration))
+        .CreateLogger();
+}
+
+
+ElasticsearchSinkOptions ConfigureElasticSearch(IConfigurationRoot configuration)
+{
+    var uri = new Uri(configuration["ElasticSearchConfiguration:Url"]);
+    return new ElasticsearchSinkOptions(uri)
+    {
+        AutoRegisterTemplate = true,
+        IndexFormat = "BaseProject" // Format indeks yang lebih baik menggunakan huruf kecil
+    };
+}
+
+#endregion
