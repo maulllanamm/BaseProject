@@ -1,4 +1,5 @@
-﻿using DTO.Base;
+﻿using DTO;
+using DTO.Base;
 
 namespace Services.Base
 {
