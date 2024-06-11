@@ -40,8 +40,8 @@ namespace BaseProject.Controllers
             //Use a method outside scope.
             .RuleFor(u => u.CartId, f => Guid.NewGuid());
 
-            var user = testUsers.Generate();
-            await _service.Create(user);
+            var user = testUsers.Generate(amount);
+            await _service.CreateBulk(user);
 
             return Ok(user);
         }
@@ -59,6 +59,20 @@ namespace BaseProject.Controllers
             // set expire time
             var expiryTime = DateTime.Now.AddSeconds(10);
             _cacheService.SetData<IEnumerable<DummyDTO>>("dummys", users, expiryTime);
+            return Ok(users);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateBulk(List<DummyDTO> dummys)
+        {
+            var users = await _service.UpdateBulk(dummys);
+            return Ok(users);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteBulk(List<DummyDTO> dummys)
+        {
+            var users = await _service.DeleteBulk(dummys);
             return Ok(users);
         }
     }
